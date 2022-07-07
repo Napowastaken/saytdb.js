@@ -19,10 +19,10 @@ module.exports = class Database {
         if (!path || typeof(path) != 'string') throw TypeError('Database path must be a non-empty string.');
         if (!path.endsWith('.json')) throw TypeError('Database path must be a valid .json file');
         if (indent && typeof(indent) != 'number') throw TypeError('Indentation must be a valid number.');
-        /** 
-         * @description The path to the file where data is stored.
-         */
+        /** @description The path to the file where data is stored. */
         this.path = path;
+
+        /** @description Represents the indentation given to the constructor. 4 if not set. */
         this.indent = indent || 4;
         this.load();
     }
@@ -94,17 +94,32 @@ module.exports = class Database {
         this.save();
     }
 
-    /**
-     * @description Clears all the database. This cannot be undone, so be careful!
-     */
+    /** @description Clears all the database. This cannot be undone, so be careful! */
     clear() {
         this.content = {}
         this.save();
     }
 
     /**
+     * @description Get all keys from the database.
+     * @returns {string[]}
+     */
+    keys() {
+        return Object.keys(this.content);
+    }
+
+    /**
+     * @description Get all values from the database.
+     * @returns {any[]}
+     */
+    values() {
+        return Object.values(this.content);
+    }
+
+    /**
      * @callback filterStatement
      * @param {any} item The item's value.
+     * @returns {boolean}
      */
 
     /**
@@ -114,12 +129,13 @@ module.exports = class Database {
      */
     filter(statement) {
         this.load();
-        return Object.values(this.content).filter(statement);
+        return this.values().filter(statement);
     }
 
     /**
      * @callback findStatement
      * @param {any} item The item's value.
+     * @returns {boolean}
      */
 
     /**
@@ -129,7 +145,7 @@ module.exports = class Database {
      */
     find(statement) {
         this.load();
-        return Object.values(this.content).find(statement);
+        return this.values().find(statement);
     }
 
     /**
