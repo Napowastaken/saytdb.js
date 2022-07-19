@@ -1,4 +1,4 @@
-export default class Database {
+export default class Database<V = any> {
     /** @description Represents all content in the database. */
     content: object;
 
@@ -25,10 +25,10 @@ export default class Database {
     public save(): void;
 
     /** @description Set a key to a specified value, or create one if it doesn't exist. */
-    public set(key: string, value: any): void;
+    public set(key: string, value: V): void;
 
     /** @description Get any key from the database. */
-    public get(key: string): any;
+    public get(key: string): V | undefined;
 
     /** @description Return a boolean indicating whether a key exists or not in the database. */
     public has(key: string): boolean;
@@ -43,13 +43,13 @@ export default class Database {
     public keys(): string[];
 
     /** @description Get all values from the database. */
-    public values(): any[];
+    public values(): V[];
 
     /** @description Return a list of items whose value passes a test. */
-    public filter(statement: (item: any) => boolean): any[];
+    public filter(statement: (item: V) => boolean): V[];
 
     /** @description Return the first item whose value passes a test, or undefined if none pass. */
-    public find(statement: (item: any) => boolean): any;
+    public find(statement: (item: V) => boolean): V | undefined;
 
     /** @description Pushes any item into a list, or create one if it doesn't exist or it's from another type. */
     public push(key: string, item: any): void;

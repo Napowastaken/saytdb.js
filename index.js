@@ -1,19 +1,15 @@
 const fs = require('fs');
 /**
- * @typedef {{
- * path: string;
- * indent?: number;
- * }} DatabaseOptions
+ * @template {any} V
  */
-
-/**
- * @typedef {(options: DatabaseOptions)} DatabaseConstructor
- */
-
 module.exports = class Database {
 
     /**
-     * @type {DatabaseConstructor} 
+     * @param {{
+     * path: string;
+     * indent?: number;
+     * }} options
+     * @template {Database<V>}
      */
     constructor({ path, indent }) {
         if (!path || typeof(path) != 'string') throw TypeError('Database path must be a non-empty string.');
@@ -54,7 +50,7 @@ module.exports = class Database {
     /**
      * @description Set a key to a specified value, or create one if it doesn't exist.
      * @param {string} key Name of the key.
-     * @param {any} value Value of the key that will be set.
+     * @param {V} value Value of the key that will be set.
      */
     set(key, value) {
         if (typeof(key) != 'string') throw TypeError('Key must be a string.');
@@ -66,7 +62,7 @@ module.exports = class Database {
     /**
      * @description Get a key from the database.
      * @param {string} key Name of the key to get.
-     * @returns {any}
+     * @returns {V}
      */
     get(key) {
         if (typeof(key) != 'string') throw TypeError('Key must be a string.');
@@ -110,22 +106,17 @@ module.exports = class Database {
 
     /**
      * @description Get all values from the database.
-     * @returns {any[]}
+     * @returns {V[]}
      */
     values() {
         return Object.values(this.content);
     }
 
-    /**
-     * @callback filterStatement
-     * @param {any} item The item's value.
-     * @returns {boolean}
-     */
 
     /**
      * @description Return a list of items whose value passes a test.
-     * @param {filterStatement} statement The statement.
-     * @returns {any[]}
+     * @param {(value: V) => boolean} statement The statement.
+     * @returns {V[]}
      */
     filter(statement) {
         this.load();
@@ -133,15 +124,9 @@ module.exports = class Database {
     }
 
     /**
-     * @callback findStatement
-     * @param {any} item The item's value.
-     * @returns {boolean}
-     */
-
-    /**
      * @description Return the first item whose value passes a test.
-     * @param {filterStatement} statement The statement.
-     * @returns {any}
+     * @param {(item: V) => boolean} statement The statement.
+     * @returns {V | undefined}
      */
     find(statement) {
         this.load();
